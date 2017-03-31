@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+    <style>
+        span {
+            position: absolute;
+        }
+    </style>
+    <script type="text/javascript">
+        var word = ['에이스 흰수염 루피 조로 상디 마르코 핸콕 나미 우솝 로빈 쵸파 브룩 프랑키 죠즈 미호크 로우 샹크스'];
+        wordSplit = word[0].split(" ");
+        var score = 0;
+        var fail = 10;
+
+
+        function game() {
+            var random = makeRandom(wordSplit.length);
+            var randomArray = wordSplit[random];
+            var ace = wordSplit.splice(random, 1);
+            var secondPannel = document.getElementById("score");
+            secondPannel.innerHTML = score;
+            var failScore = document.getElementById("fail");
+            failScore.innerHTML = fail;
+            if(randomArray) {
+                var top = makeElement(randomArray);
+                document.getElementById('panel').appendChild(top);
+                console.log('어펜드하고 난후 배열' + word);
+            }
+            plusTop(failScore);
+            setTimeout("game()", 1000);
+        }
+
+        function makeElement(word) {
+            var span = document.createElement('span');
+            span.id = word;
+            span.innerHTML = word;
+            span.style.left = makeRandom(300) + "px";
+            span.style.top = "10px";
+
+            return span;
+
+            }
+        function plusTop() {
+            var panel = document.getElementById("panel");
+            var bringSpan = panel.getElementsByTagName("span");
+            for(var i=0; i < bringSpan.length; i++) {
+                var move = bringSpan[i].style;
+                move.top = parseInt(move.top) + 50 + "px";
+                positionWord(move2, bringSpan[i]);
+            }
+        }
+
+        function positionWord(move, bringSpan) {;
+            var pannel = document.getElementById('panel');
+            console.log(move);
+            if(parseInt(move) > parseInt(pannel.style.height)) {
+                console.log("------- 지워야할꺼 ------")
+                console.log(bringSpan);
+                bringSpan.remove();
+                var failScore = document.getElementById("fail");
+                fail --;
+                failScore.innerHTML = fail;
+                if(fail === 0) {
+                    stop();
+                    return 0;
+                }
+            }
+        }
+        function stop() {
+            alert('겜 종료');
+        }
+
+        function makeRandom( random ) {
+            var number = Math.random();
+            number = number * 10000;
+            number = Math.ceil( number );
+            number = number % random;
+            return number;
+        }
+
+        function onKeyDown(event) {
+            if(event.keyCode == 13) {
+                var pannel = document.getElementById("panel");
+                var span1 = pannel.getElementsByTagName("span");
+                var textValue = document.getElementById("text");
+                for(var i=0; i < span1.length; i++) {
+                  if(textValue.value === span1[i].id) {
+                      pannel.removeChild(span1[i]);
+                      textValue.value = "";
+                      score ++;
+                      var modifyScore = document.getElementById("score");
+                      modifyScore.innerHTML = score;
+                  }
+                }
+            }
+        }
+
+    </script>
+</head>
+<body>
+<div id = "panel" style="width:520px;height:300px;border:1px solid #58FAF4;"></div>
+<div style="width:520px;height:300px;border:1px solid #58FAF4;">
+    <input type = "button" id="btn" value = "게임시작" onclick = game() ></br>
+    <input type = "text" id="text" onKeyDown = "onKeyDown(event);">
+    <p>점수 <span id="score"></span> </p>
+    <p>실패 <span id="fail"></span> </p>
+</div>
+
+</body>
+</html>
+
+
+
+
