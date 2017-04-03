@@ -66,14 +66,14 @@
             }
         }
 
-        function positionWord(top, bringSpan) {
+        function positionWord(top) {
             var pannel = document.getElementById('panel');
             if(parseInt(top) > parseInt(pannel.style.height)) {
                 return -1;
             }
         }
 
-        function makeRandom( random ) {
+        function makeRandom(random) {
             var number = Math.random();
             number = number * 10000;
             number = Math.ceil( number );
