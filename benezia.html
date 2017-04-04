@@ -83,9 +83,7 @@
             for(var j=0; j< overSpan.length; j++){
                 var pannel = document.getElementById('panel');
                 pannel.removeChild(overSpan[j]);
-                var failScore = document.getElementById("fail");
-                fail --;
-                failScore.innerHTML = fail;
+                life();
             }
         }
 
@@ -101,7 +99,6 @@
             number = number * 10000;
             number = Math.ceil(number);
             number = number % random;
-//            console.log('number 값:' + number);
             return number;
         }
 
@@ -114,12 +111,21 @@
                     if(textValue.value === span1[i].id) {
                         pannel.removeChild(span1[i]);
                         textValue.value = "";
-                        score ++;
-                        var modifyScore = document.getElementById("score");
-                        modifyScore.innerHTML = score;
+                        scorePlus();
                     }
                 }
             }
+        }
+
+        function life() {
+            var failScore = document.getElementById("fail");
+            fail --;
+            failScore.innerHTML = fail;
+        }
+        function scorePlus() {
+            var modifyScore = document.getElementById("score");
+            score ++;
+            modifyScore.innerHTML = score;
         }
 
         function difficulty() {
