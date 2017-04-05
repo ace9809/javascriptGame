@@ -8,30 +8,31 @@
         }
     </style>
     <script type="text/javascript">
-        var word = ['에이스 흰수염 루피 조로 상디 마르코 핸콕 나미 우솝 로빈 쵸파 브룩 프랑키 죠즈 미호크 샹크스 비비 티치 로우 베포 카이도우 '];
-        wordSplit = word[0].split(" ");
+        var wordSplit = "에이스 흰수염 루피 조로 상디 마르코 핸콕 나미 우솝 로빈 쵸파 브룩 프랑키 죠즈 미호크 샹크스 비비 티치 로우 베포 카이도우".split(" ");
         var score = 0;
-        var fail = 10;
+        var life = 10;
         var level = 1;
+        var moveSpeed = 20;
 
         function game() {
+            document.getElementById("btn").disabled = true;
             var random = makeRandom(wordSplit.length);
-            var randomArray = wordSplit[random];
+            var pickedWord = wordSplit[random];
             wordSplit.splice(random,1);
-            var secondPannel = document.getElementById("score");
-            secondPannel.innerHTML = score;
-            var failScore = document.getElementById("fail");
-            failScore.innerHTML = fail;
-            if(randomArray) {
-                var top = makeElement(randomArray);
+            var secondPanel = document.getElementById("score");
+            secondPanel.innerHTML = score;
+            var failScore = document.getElementById("life");
+            failScore.innerHTML = life;
+            if(pickedWord) {
+                var top = makeElement(pickedWord);
                 document.getElementById('panel').appendChild(top);
             }
             plusTop(failScore);
-            if(fail > 0 && score < 30){
+            if(life > 0 && score < 30){
                 console.log(score);
                 setTimeout("game()",1000);
-            }else{
-                if(fail === 0) {
+            } else {
+                if(life === 0) {
                     alert('게임 실패');
                 }
                 else if(score === 30) {
@@ -47,8 +48,20 @@
             span.innerHTML = word;
             span.style.left = makeRandom(300) + "px";
             span.style.top = "10px";
-
             return span;
+        }
+
+        function setTop(elem, top) {
+            elem.top = top + "px";
+        }
+
+        function removeOverSpan(overSpan)
+        {
+            for(var j=0; j< overSpan.length; j++) {
+                var pannel = document.getElementById('panel');
+                pannel.removeChild(overSpan[j]);
+                minusLife();
+            }
         }
 
         function plusTop() {
@@ -56,35 +69,25 @@
             var bringSpan = panel.getElementsByTagName("span");
             var overSpan = [];
             for(var i=0; i < bringSpan.length; i++) {
-                var move = bringSpan[i].style;
-                var check = positionWord(parseInt(move.top)+50, bringSpan[i]);
+                var targetStyle = bringSpan[i].style;
+                console.log(moveSpeed);
                 console.log("점수는 :" + score);
+
+                var check = positionWord(parseInt(targetStyle.top) + moveSpeed);
                 if(check == -1){
                     overSpan.push(bringSpan[i]);
                 }
-                if(score <= 3) {
-                    level = 1;
-                    console.log("점수가 작아요");
-                    move.top = parseInt(move.top) + 20 + "px";
-                    difficulty(level);
-                }
-                else if ( score > 3 && score <= 6 ) {
+                if ( score > 3 && score <= 6 ) {
+                    moveSpeed = 40;
                     level = 2;
-                    move.top = parseInt(move.top) + 40 + "px";
-                    difficulty(level);
-                }
-                else {
+                } else if (score > 6) {
+                    moveSpeed = 90;
                     level = 3;
-                    move.top = parseInt(move.top) + 90 + "px";
-                    difficulty(level);
                 }
+                setTop(targetStyle, parseInt(targetStyle.top) + moveSpeed);
+                difficulty(level);
             }
-
-            for(var j=0; j< overSpan.length; j++){
-                var pannel = document.getElementById('panel');
-                pannel.removeChild(overSpan[j]);
-                life();
-            }
+            removeOverSpan(overSpan);
         }
 
         function positionWord(top) {
@@ -104,23 +107,26 @@
 
         function onKeyDown(event) {
             if(event.keyCode == 13) {
-                var pannel = document.getElementById("panel");
-                var span1 = pannel.getElementsByTagName("span");
+                var panel = document.getElementById("panel");
+                var span1 = panel.getElementsByTagName("span");
                 var textValue = document.getElementById("text");
                 for(var i=0; i < span1.length; i++) {
                     if(textValue.value === span1[i].id) {
-                        pannel.removeChild(span1[i]);
+                        panel.removeChild(span1[i]);
                         textValue.value = "";
                         scorePlus();
+                    }
+                    else {
+                        textValue.value = "";
                     }
                 }
             }
         }
 
-        function life() {
-            var failScore = document.getElementById("fail");
-            fail --;
-            failScore.innerHTML = fail;
+        function minusLife() {
+            var failScore = document.getElementById("life");
+            life --;
+            failScore.innerHTML = life;
         }
         function scorePlus() {
             var modifyScore = document.getElementById("score");
@@ -134,16 +140,15 @@
             return initLevel;
 
         }
-
     </script>
 </head>
 <body>
-<div id = "panel" style="width:520px;height:320px;border:1px solid #58FAF4;"></div>
-<div style="width:520px;height:300px;border:1px solid #58FAF4;">
-    <input type = "button" id="btn" value = "게임시작" onclick = game() ></br>
+<div id = "panel" style="width:520px;height:320px;border:1px solid #58FAF4;overflow:hidden;"></div>
+<div style = "width:520px;height:300px;border:1px solid #58FAF4;" disabled>
+    <input type = "button" id="btn" value = "게임시작" onclick = "game();" ></br>
     <input type = "text" id="text" onKeyDown = "onKeyDown(event);">
     <p>점수 <span id="score"></span> </p>
-    <p>실패 <span id="fail"></span> </p>
+    <p>생명 <span id="life"></span> </p>
     <p>레벨 <span id="level"></span> </p>
 </div>
 
